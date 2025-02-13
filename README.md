@@ -1,0 +1,2 @@
+# Modeling_of_economic_ecological_and_social_processes
+Моделювання економічних, екологічних та соціальних процесів
