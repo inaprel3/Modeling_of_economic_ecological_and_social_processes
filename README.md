@@ -24,6 +24,6 @@
 ![](https://github.com/inaprel3/Modeling_of_economic_ecological_and_social_processes/blob/main/picture/6%20Zooplankton%20graph.png)
 
 ## 7 АГЕНТНЕ МОДЕЛЮВАННЯ СОЦІАЛЬНОГО ПРОЦЕСУ (ПОШИРЕННЯ ІДЕЇ)
-![]()
-![]()
-![]()
+![](https://github.com/inaprel3/Modeling_of_economic_ecological_and_social_processes/blob/main/picture/7%20The%20impact%20of%20threshold%20on%20the%20early%20dynamics%20of%20idea%20diffusion.png)
+![](https://github.com/inaprel3/Modeling_of_economic_ecological_and_social_processes/blob/main/picture/7%20The%20impact%20of%20the%20initial%20share%20of%20carriers%20on%20the%20early%20dynamics%20of%20the%20idea%E2%80%99s%20spread.png)
+![](https://github.com/inaprel3/Modeling_of_economic_ecological_and_social_processes/blob/main/picture/7%20Comparing%20the%20impact%20of%20network%20structure%20on%20the%20early%20dynamics%20of%20idea%20diffusion.png)
