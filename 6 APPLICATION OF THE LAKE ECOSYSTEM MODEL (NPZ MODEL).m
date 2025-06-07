@@ -1,7 +1,6 @@
 % lab6_npz_model.m
-
 function lab6_npz_model
-    clc; clear; close all;
+    clc; close all;
 
     %% === Модельна задача ===
     a = 1.0;
@@ -28,36 +27,49 @@ function lab6_npz_model
     %% === Основне завдання: варіація e ===
     e_values = 0.1:0.1:0.5;
     colors = ['b', 'g', 'r', 'm', 'k'];
+    legend_str = arrayfun(@(e) sprintf('e = %.1f', e), e_values, 'UniformOutput', false);
 
-    figure('Name', 'Вплив параметра e на NPZ-модель', 'NumberTitle', 'off');
+        % === Окремий графік для N(t) ===
+    figure('Name', 'N(t) при різних e', 'NumberTitle', 'off', 'Position', [100, 100, 800, 400]);
     for i = 1:length(e_values)
         e = e_values(i);
-        [t, Y] = ode45(@(t, y) npz_system(y, a, b, e, r, m), tspan, y0);
-
-        subplot(3,1,1);
-        plot(t, Y(:,1), 'Color', colors(i), 'LineWidth', 1.5); hold on;
-        ylabel('N(t)');
-        title('Поживні речовини N(t)');
-        grid on;
-
-        subplot(3,1,2);
-        plot(t, Y(:,2), 'Color', colors(i), 'LineWidth', 1.5); hold on;
-        ylabel('P(t)');
-        title('Фітопланктон P(t)');
-        grid on;
-
-        subplot(3,1,3);
-        plot(t, Y(:,3), 'Color', colors(i), 'LineWidth', 1.5); hold on;
-        ylabel('Z(t)');
-        xlabel('Час t');
-        title('Зоопланктон Z(t)');
-        grid on;
+        [t_full, Y_full] = ode45(@(t, y) npz_system(y, a, b, e, r, m), tspan, y0);
+        idx = t_full >= 3 & t_full <= 70;  % обмеження по часу
+        plot(t_full(idx), Y_full(idx,1), 'Color', colors(i), 'LineWidth', 1.5); hold on;
     end
+    xlim([3 70]);
+    xlabel('Час t'); ylabel('N(t)');
+    title('Поживні речовини N(t)');
+    legend(legend_str);
+    grid on;
 
-    legend_str = arrayfun(@(e) sprintf('e = %.1f', e), e_values, 'UniformOutput', false);
-    subplot(3,1,1); legend(legend_str);
-    subplot(3,1,2); legend(legend_str);
-    subplot(3,1,3); legend(legend_str);
+        % === Окремий графік для P(t) ===
+    figure('Name', 'P(t) при різних e', 'NumberTitle', 'off', 'Position', [250, 150, 800, 400]);
+    for i = 1:length(e_values)
+        e = e_values(i);
+        [t_full, Y_full] = ode45(@(t, y) npz_system(y, a, b, e, r, m), tspan, y0);
+        idx = t_full >= 5 & t_full <= 35;  % обмеження по часу
+        plot(t_full(idx), Y_full(idx,2), 'Color', colors(i), 'LineWidth', 1.5); hold on;
+    end
+    xlim([5 35]);
+    xlabel('Час t'); ylabel('P(t)');
+    title('Фітопланктон P(t)');
+    legend(legend_str);
+    grid on;
+
+     % === Окремий графік для Z(t) ===
+    figure('Name', 'Z(t) при різних e', 'NumberTitle', 'off', 'Position', [300, 100, 800, 400]);
+    for i = 1:length(e_values)
+        e = e_values(i);
+        [t_full, Y_full] = ode45(@(t, y) npz_system(y, a, b, e, r, m), tspan, y0);
+        idx = t_full <= 50;  % тільки до часу 50
+        plot(t_full(idx), Y_full(idx,3), 'Color', colors(i), 'LineWidth', 1.5); hold on;
+    end
+    xlim([0 50]);
+    xlabel('Час t'); ylabel('Z(t)');
+    title('Зоопланктон Z(t)');
+    legend(legend_str);
+    grid on;
 end
 
 %% === Підфункція NPZ-моделі ===
