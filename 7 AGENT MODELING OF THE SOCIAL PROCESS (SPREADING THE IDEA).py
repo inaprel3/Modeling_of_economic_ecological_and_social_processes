@@ -1,8 +1,11 @@
+# python main.py
+
 from mesa import Agent, Model
 from mesa.time import SimultaneousActivation
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
+import numpy as np
 
 # ===== АГЕНТ =====
 class SocialAgent(Agent):
@@ -57,7 +60,9 @@ class SocialSpreadModel(Model):
         return [agent.state for agent in self.schedule.agents]
 
 # ===== СИМУЛЯЦІЯ =====
-def run_simulation(threshold=0.3, init_frac=0.05, graph_type="erdos", steps=30):
+def run_simulation(threshold=0.3, init_frac=0.05, graph_type="erdos", steps=30, seed=42):
+    random.seed(seed)
+    np.random.seed(seed)
     model = SocialSpreadModel(threshold=threshold, init_frac=init_frac, graph_type=graph_type)
     fractions = []
     for _ in range(steps):
@@ -69,44 +74,50 @@ def run_simulation(threshold=0.3, init_frac=0.05, graph_type="erdos", steps=30):
 # ===== ГРАФІКИ =====
 # Залежність від порогу
 def plot_thresholds():
-    thresholds = [0.1, 0.3, 0.5, 0.7]
-    for t in thresholds:
-        fractions = run_simulation(threshold=t)
+    thresholds = [0.01, 0.03, 0.05, 0.07] #0.1, 0.3, 0.5, 0.7
+    for i, t in enumerate(thresholds):
+        fractions = run_simulation(threshold=t, seed=100 + i)
         plt.plot(fractions, label=f"threshold={t}")
     plt.title("Залежність поширення від порогового значення")
     plt.xlabel("Крок моделювання")
     plt.ylabel("Частка, що підтримують ідею")
+    plt.xlim(0, 2.5)
+    plt.ylim(0.3, 1)
     plt.legend()
     plt.grid(True)
     plt.show()
 
 # Залежність від початкової частки носіїв
 def plot_init_fracs():
-    init_fracs = [0.01, 0.1, 0.2]
-    for frac in init_fracs:
-        fractions = run_simulation(init_frac=frac)
+    init_fracs = [0.2, 0.3, 0.4] #0.01, 0.1, 0.2
+    for i, frac in enumerate(init_fracs):
+        fractions = run_simulation(init_frac=frac, seed=200 + i)
         plt.plot(fractions, label=f"init_frac={frac}")
     plt.title("Залежність від початкової кількості носіїв ідеї")
     plt.xlabel("Крок моделювання")
     plt.ylabel("Частка, що підтримують ідею")
+    plt.xlim(0, 3.5)
+    plt.ylim(0.2, 1)
     plt.legend()
     plt.grid(True)
     plt.show()
 
 # Порівняння типів графів
 def plot_graph_comparison():
-    for graph_type in ["erdos", "barabasi"]:
-        fractions = run_simulation(graph_type=graph_type)
+    for i, graph_type in enumerate(["erdos", "barabasi"]):
+        fractions = run_simulation(graph_type=graph_type, init_frac=0.2, threshold=0.2, seed=300 + i)
         plt.plot(fractions, label=graph_type)
     plt.title("Порівняння типів графів")
     plt.xlabel("Крок моделювання")
     plt.ylabel("Частка, що підтримують ідею")
+    plt.xlim(0, 3)
+    plt.ylim(0.55, 0.95)
     plt.legend()
     plt.grid(True)
     plt.show()
 
 # Середня кількість кроків до насичення
-def compute_avg_saturation_steps(runs=20, saturation_level=0.9):
+def compute_avg_saturation_steps(runs=20, saturation_level=0.9, seed=400):
     def run_until_saturation(model, max_steps=100):
         for step in range(max_steps):
             model.step()
@@ -116,7 +127,9 @@ def compute_avg_saturation_steps(runs=20, saturation_level=0.9):
         return max_steps
 
     steps_list = []
-    for _ in range(runs):
+    for i in range(runs):
+        random.seed(seed + i)
+        np.random.seed(seed + i)
         model = SocialSpreadModel(threshold=0.3, init_frac=0.05)
         steps_needed = run_until_saturation(model)
         steps_list.append(steps_needed)
